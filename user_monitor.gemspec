@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.version     = UserMonitor::VERSION
   s.authors     = ["Stephane Liu"]
   s.email       = ["sliu@sjliu.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of UserMonitor."
-  s.description = "TODO: Description of UserMonitor."
+  s.homepage    = "https://github.com/stephaneliu/user_monitor"
+  s.summary     = "Updates created_by and updated_by fields for Active Record"
+  s.description = "Monitors Active Record saves and updates to update created_by and updated_by fields with current_user"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
