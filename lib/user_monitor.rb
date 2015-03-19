@@ -1,5 +1,4 @@
 require 'user_monitor/core_ext'
 
-ActiveRecord::Base.class_eval do
-  include UserMonitor
+module UserMonitor
 end

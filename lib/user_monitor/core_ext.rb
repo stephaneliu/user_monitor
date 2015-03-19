@@ -1,43 +1,65 @@
 module UserMonitor
-  def self.included(base)
-    base.class_eval do
-      alias_method_chain :create, :user
-      alias_method_chain :update, :user
+  extend ActiveSupport::Concern
 
-      def current_user
-        Thread.current[:user]
+  included do
+    before_create :create_with_user
+    before_save   :update_with_user
+      
+    def current_user
+      Thread.current[:user]
+    end
+
+    def create_with_user
+      user = current_user
+
+      if user.present?
+        self[:created_by] = user.id if created_by_assignable?
+        self[:updated_by] = user.id if updated_by_assignable?
+      end
+    end
+    
+    def update_with_user
+      user = current_user
+
+      if user.present?
+        self[:updated_by] = user.id if updated_by_assignable?
+      end
+    end
+    
+    def creator
+      begin
+        current_user.class.find(self[:created_by]) if current_user
+      rescue ActiveRecord::RecordNotFound
+        nil
+      end
+    end
+   
+    def updater
+      begin
+        current_user.class.find(self[:updated_by]) if current_user
+      rescue ActiveRecord::RecordNotFound
+        nil
+      end
+    end
+
+    private
+
+    def created_by_assignable?
+      respond_to?(:created_by=) && created_by.blank?
+    end
+
+    def updated_by_assignable?
+      if respond_to?(:updated_by=)
+        new_record? ? updated_by.blank? : true
       end
     end
   end
 
-  def create_with_user
-    user = current_user
-    if !user.nil?
-      self[:created_by] = user.id if respond_to?(:created_by) && created_by.nil?
-      self[:updated_by] = user.id if respond_to?(:updated_by) && updated_by.nil?
-    end
-    create_without_user
+  module ClassMethods
   end
-  
-  def update_with_user
-    user = current_user
-    self[:updated_by] = user.id if respond_to?(:updated_by) && !user.nil?
-    update_without_user
-  end
-  
-  def creator
-    begin
-      current_user.class.find(self[:created_by]) if current_user
-    rescue ActiveRecord::RecordNotFound
-      nil
-    end
-  end
- 
-  def updater
-    begin
-      current_user.class.find(self[:updated_by]) if current_user
-    rescue ActiveRecord::RecordNotFound
-      nil
-    end
+
+  module InstanceMethods
   end
 end 
+
+ActiveRecord::Base.send :include, UserMonitor
