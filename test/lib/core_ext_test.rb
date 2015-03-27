@@ -16,19 +16,19 @@ class CoreExtTest < ActiveSupport::TestCase
     User.delete_all
   end
   
-  def test_model_without_created_by_updated_by_should_not_fail
+  test "model without created_by / updated_by should not fail" do
     shape_without_monitor = ShapeWithoutMonitor.new(name: 'Square')
     assert shape_without_monitor.save
   end
 
-  def test_model_without_current_user
+  test "model without current_user" do
     shape = Shape.new(name: 'Circle')
     assert shape.save
     assert_equal shape.created_by, nil
     assert_equal shape.updated_by, nil
   end
 
-  def test_model_with_current_user
+  test "model with current_user" do
     self.current_user = @user
     shape             = Shape.new(name: 'Square')
     shape.save
@@ -36,7 +36,7 @@ class CoreExtTest < ActiveSupport::TestCase
     assert_equal shape.updated_by, @user.id
   end
 
-  def test_multiple_updates
+  test "multiple updates" do
     self.current_user = @user
     shape             = Shape.new(name: 'Polygon')
     shape.save
@@ -51,7 +51,7 @@ class CoreExtTest < ActiveSupport::TestCase
     assert_equal shape.updated_by, user_2.id
   end
 
-  def test_updated_by_assigned
+  test "when updated_by assigned before create" do
     self.current_user = @user
     assigned_user     = User.create!(name: 'user_something')
     shape             = Shape.new(name: 'Updated by Assigned',
@@ -61,13 +61,13 @@ class CoreExtTest < ActiveSupport::TestCase
     assert_equal assigned_user.id, shape.updated_by
   end
 
-  def test_convenience_without_user
+  test "creator and updater without user" do
     shape = Shape.new
     assert_nil shape.creator
     assert_nil shape.updater
   end
 
-  def test_creator_with_user
+  test "creator and updater with user" do
     self.current_user = @user
     shape             = Shape.create! name: 'shape'
     assert_equal shape.creator, @user
