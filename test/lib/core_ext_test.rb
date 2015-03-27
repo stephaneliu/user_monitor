@@ -51,6 +51,16 @@ class CoreExtTest < ActiveSupport::TestCase
     assert_equal shape.updated_by, user_2.id
   end
 
+  def test_updated_by_assigned
+    self.current_user = @user
+    assigned_user     = User.create!(name: 'user_something')
+    shape             = Shape.new(name: 'Updated by Assigned',
+                                  updated_by: assigned_user.id)
+    shape.save
+    assert_equal shape.created_by, @user.id
+    assert_equal assigned_user.id, shape.updated_by
+  end
+
   def test_convenience_without_user
     shape = Shape.new
     assert_nil shape.creator
