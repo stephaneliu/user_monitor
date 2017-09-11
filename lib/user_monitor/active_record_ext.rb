@@ -5,7 +5,7 @@ module UserMonitor
     before_create :create_with_user, if: :current_user?
     before_save   :update_with_user, if: :current_user?
   end
-      
+
   def current_user
     Thread.current[:user]
   end
@@ -15,19 +15,17 @@ module UserMonitor
   end
 
   def create_with_user
-    user              = current_user
-    self[:created_by] = user.id if created_by_assignable?
-    self[:updated_by] = user.id if updated_by_assignable?
+    write_attribute('created_by', current_user.id) if created_by_assignable?
+    write_attribute('updated_by', current_user.id) if updated_by_assignable?
   end
   
   def update_with_user
-    user              = current_user
-    self[:updated_by] = user.id if updated_by_assignable?
+    write_attribute('updated_by', current_user.id) if updated_by_assignable?
   end
   
   def creator
     begin
-      current_user.class.find(self[:created_by]) if current_user
+      current_user.class.find(read_attribute('created_by')) if current_user
     rescue ActiveRecord::RecordNotFound
       nil
     end
@@ -35,7 +33,7 @@ module UserMonitor
  
   def updater
     begin
-      current_user.class.find(self[:updated_by]) if current_user
+      current_user.class.find(read_attribute('updated_by')) if current_user
     rescue ActiveRecord::RecordNotFound
       nil
     end
