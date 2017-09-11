@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'user_monitor'
 
-class CoreExtTest < ActiveSupport::TestCase
+class ActiveRecordExtTest < ActiveSupport::TestCase
   def setup
     @user = User.create!(name: 'test')
   end
