@@ -1,4 +1,2 @@
 require 'user_monitor/core_ext'
-
-module UserMonitor
-end
+require 'user_monitor/active_record'
