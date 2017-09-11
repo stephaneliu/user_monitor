@@ -14,6 +14,7 @@ class CoreExtTest < ActiveSupport::TestCase
     ShapeWithoutMonitor.delete_all
     Shape.delete_all
     User.delete_all
+    Thread.current[:user] = nil
   end
   
   test "model without created_by / updated_by should not fail" do
@@ -24,8 +25,8 @@ class CoreExtTest < ActiveSupport::TestCase
   test "model without current_user" do
     shape = Shape.new(name: 'Circle')
     assert shape.save
-    assert_equal shape.created_by, nil
-    assert_equal shape.updated_by, nil
+    assert_nil shape.created_by, nil
+    assert_nil shape.updated_by, nil
   end
 
   test "model with current_user" do
