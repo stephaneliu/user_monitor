@@ -1,2 +1,2 @@
-class Shape < ActiveRecord::Base
+class Shape < ApplicationRecord
 end

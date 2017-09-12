@@ -1,2 +1,2 @@
-class ShapeWithoutMonitor < ActiveRecord::Base
+class ShapeWithoutMonitor < ApplicationRecord
 end
