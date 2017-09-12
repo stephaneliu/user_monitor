@@ -1,3 +1,15 @@
 = UserMonitor
 
-This project rocks and uses MIT-LICENSE.
+Test using appraisal
+
+Install & configure:
+
+$ appraisal install
+
+Run tests for all the versions of Rails:
+
+$ appraisal rake test
+
+Run a specific version of Rails (view Appraisals file for supported version):
+
+$ appraisal rails-5 rake test
